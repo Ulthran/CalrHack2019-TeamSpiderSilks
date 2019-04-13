@@ -7,58 +7,130 @@
 # links to the individual events that day.
 # Writes links into eventURLs.txt and writes the data we have at this point
 # into data*DATE*.txt.
+# First argument is the date we're looking at
 
 import urllib.request
 import re
+import sys
 
-# Reads in html
-fp = urllib.request.urlopen("https://apps.carleton.edu/calendar/")
-byteStr = fp.read()
+# Function for scraping each URL found above
+def scrapeIndUrl(url, name, date):
+	fp = urllib.request.urlopen(url)
+	byteStr = fp.read()
 
-htmlStr = byteStr.decode("utf8")
-fp.close()
+	htmlStr = byteStr.decode("utf8")
+	fp.close()
 
-# RegEx to sort out event URLs and names
-# Looking for this string which preceeds each URL:
-# <li class="event hasTime"><a href="
-# and finishes with:
-# </a>
+	# RegEx to find start and end times
+	# Preceeding string is:
+	# <span class="time">
+	# and following is:
+	# </span> <span class="divider">/</span>
 
-searches = re.findall("<li class=\"event hasTime\"><a href=\".+</a>", htmlStr)
-urls = []
-eventIDs = []
-dates = []
-names = []
-for search in searches:
-  newSearch = re.sub("<li class=\"event hasTime\"><a href=\"", "", search)
-  newSearch = re.sub("</a>", "", newSearch)
-  # URL can be composed from event_id and date
-  eventID = re.findall("\?event_id=.+&amp;", newSearch)
-  eventID = re.sub("\?event_id=", "", eventID[0])
-  eventID = re.sub("&amp;", "", eventID)
-  eventIDs.append(eventID)
-  date = re.findall("&amp;.+\">", newSearch)
-  date = re.sub("&amp;date=", "", date[0])
-  date = re.sub("\">", "", date)
-  dates.append(date)
-  # Construct URL
-  url = "https://apps.carleton.edu/calendar/?view=daily&start_date=" + date
-  url = url + "&event_id=" + eventID + "&date=" + date
-  urls.append(url)
-  # Get event names as well
-  name = re.findall("\">.+", newSearch)
-  name = re.sub("\">", "", name[0])
-  names.append(name)
+	searches = re.findall("<span class=\"time\">.+</span>", htmlStr)
+	startTime = "00:00:00"
+	endTime = "00:00:00"
 
-# Writes urls to file eventURLs.txt
-with open('eventURLs.txt', 'w') as f:
-  for url in urls:
-    f.write("%s\n" % url)
+	if "8211" not in searches[0]:
+	  startTime = re.sub("<span class=\"time\">", "", searches[0])
+	  startTime = re.sub("</span> <span class=\"divider\">/</span>", "", startTime)
+	  endTime = ""
+	else:
+	  startTime = re.sub("<span class=\"time\">", "", searches[0])
+	  startTime = re.sub("</span> <span class=\"divider\">/</span>", "", startTime)
+	  endTime = re.sub(".+ &#8211; ", "", startTime)
+	  startTime = re.sub(" &#8211; .*", "", startTime)
+	  
+	  # Implement this please
+	  #print (int(startTime[0:1])+12)
+	  #if "am" not in endTime:
+	    #print (startTime[0:2])
 
-# Writes data we have at this point to data.txt
-with open('data' + dates[0] + '.txt', 'w') as f:
-  f.write("Name, Date, URL")
-  i = 0
-  for name in names:
-    f.write("\n" +  name + ", " + dates[i] + ", " + urls[i])
-    i += 1
+	# RegEx to find location
+	# Preceeding string is:
+	# <span class="divider">/</span> <span class="location">
+	# and following string is:
+	# </span></div>
+
+	searches = re.findall("<span class=\"divider\">/</span> <span class=\"location\">.+</span></div>", htmlStr)
+	location = "Nowhere"
+	for search in searches:
+	  location = re.sub("<span class=\"divider\">/</span> <span class=\"location\">", "", search)
+	  location = re.sub("</span></div>", "", location)
+
+	# RegEx to find description
+	# Preceeding string is:
+	# <p class="description">
+	# and following string is:
+	# </p>
+
+	searches = re.findall("<p class=\"description\">.+</p>", htmlStr)
+	description = "Boring"
+	for search in searches:
+	  description = re.sub("<p class=\"description\">", "", search)
+	  description = re.sub("</p>", "", description)
+
+	# RegEx to find the For field
+	# Preceeding string is:
+	# </div><div class="audiences"><h4>For:</h4>
+	# and the following line is:
+	# </div><div class="export">
+	
+	
+	
+	# Export data into a .txt file
+	with open('data' + date + '.txt', 'a+') as f:
+	  f.write(name + ", " + date + ", " + url + ", " + startTime + ", " + endTime + ", " + location + ", " + description + "\n")
+
+
+if __name__ == "__main__":
+	# Reads in html
+	date = sys.argv[1]
+	calURL = "https://apps.carleton.edu/calendar/?start_date=" + date + "&view=daily&no_search=1"
+	fp = urllib.request.urlopen(calURL)
+	byteStr = fp.read()
+
+	htmlStr = byteStr.decode("utf8")
+	fp.close()
+
+	# RegEx to sort out event URLs and names
+	# Looking for this string which preceeds each URL:
+	# <li class="event hasTime"><a href="?view=daily&amp;start_date=2019-04-13&amp;
+	# and finishes with:
+	# </a>
+
+	searches = re.findall("<li class=\"event hasTime\"><a href=\"\?view=daily&amp;start_date=2019-04-13&amp;.+</a>", htmlStr)
+	urls = []
+	eventIDs = []
+	dates = []
+	names = []
+	for search in searches:
+	  newSearch = re.sub("<li class=\"event hasTime\"><a href=\"\?view=daily&amp;start_date=2019-04-13&amp;", "", search)
+	  newSearch = re.sub("</a>", "", newSearch)
+	  # URL can be composed from event_id and date
+	  eventID = re.findall("event_id=.+&amp;", newSearch)
+	  eventID = re.sub("event_id=", "", eventID[0])
+	  eventID = re.sub("&amp;", "", eventID)
+	  eventIDs.append(eventID)
+	  date = re.findall("&amp;.+\">", newSearch)
+	  date = re.sub("&amp;date=", "", date[0])
+	  date = re.sub("\">", "", date)
+	  dates.append(date)
+	  # Construct URL
+	  url = "https://apps.carleton.edu/calendar/?view=daily&start_date=" + date
+	  url = url + "&event_id=" + eventID + "&date=" + date
+	  urls.append(url)
+	  # Get event names as well
+	  name = re.findall("\">.+", newSearch)
+	  name = re.sub("\">", "", name[0])
+	  names.append(name)
+
+	# Writes data we have at this point to file
+	i = 0
+	open('data' + dates[0] + '.txt', 'w').close()
+	for name in names:
+	  print(urls[i] + " " + name + " " + dates[i])
+	  scrapeIndUrl(urls[i], name, dates[i])
+	  i += 1
+
+
