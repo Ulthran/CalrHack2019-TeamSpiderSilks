@@ -1,3 +1,14 @@
+"""
+calendarBuilder.py
+
+*******************************************************************
+IMPORTANT: WILL CLEAR ALL EVENTS ON WHATEVER CALENDAR IT IS USED ON
+*******************************************************************
+
+Imports calendar data from an excel sheet and exports it to user's choice of
+google calendars. It wipes the calendar, and then uploads all of the excel sheet.
+"""
+
 from __future__ import print_function
 import datetime
 import pickle
@@ -11,7 +22,20 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
+athleteActivities = ["Athletics Event"]
+recActivities = ["Dance"]
+infoActivities = ["Lecture"]
 
+def categoryColor(category):
+    if category in athleteActivities:
+        colorId = 2
+    elif category in recActivities:
+        colorId = 5
+    elif category in infoActivities:
+        colorId = 9
+    else:
+        colorId = 3
+    return colorId
 
 def insertYearEvents(service, creds, name, location, description, date, startTime, endTime, category, keyWords, URL):
     event = {
@@ -28,6 +52,11 @@ def insertYearEvents(service, creds, name, location, description, date, startTim
       },
       'description': category + "\n" + description + "\n\n" + keyWords + "\n\n" + URL,
       'locked': True,
+      'colorId': categoryColor(category),
+      #'colorId': {
+    #"background": "orange",
+#        "foreground": 'yellow'
+     # }
     }
 
     event = service.events().insert(calendarId='primary', body=event).execute()
