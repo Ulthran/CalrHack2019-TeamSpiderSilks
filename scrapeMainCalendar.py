@@ -5,6 +5,8 @@
 #
 # Does a RegEx search of the main calendar page on a given date and gets the
 # links to the individual events that day.
+# Writes links into eventURLs.txt and writes the data we have at this point
+# into data*DATE*.txt.
 
 import urllib.request
 import re
@@ -26,7 +28,7 @@ searches = re.findall("<li class=\"event hasTime\"><a href=\".+</a>", htmlStr)
 urls = []
 eventIDs = []
 dates = []
-eventNames = []
+names = []
 for search in searches:
   newSearch = re.sub("<li class=\"event hasTime\"><a href=\"", "", search)
   newSearch = re.sub("</a>", "", newSearch)
@@ -43,9 +45,20 @@ for search in searches:
   url = "https://apps.carleton.edu/calendar/?view=daily&start_date=" + date
   url = url + "&event_id=" + eventID + "&date=" + date
   urls.append(url)
+  # Get event names as well
+  name = re.findall("\">.+", newSearch)
+  name = re.sub("\">", "", name[0])
+  names.append(name)
 
 # Writes urls to file eventURLs.txt
 with open('eventURLs.txt', 'w') as f:
-    for url in urls:
-        f.write("%s\n" % url)
+  for url in urls:
+    f.write("%s\n" % url)
 
+# Writes data we have at this point to data.txt
+with open('data' + dates[0] + '.txt', 'w') as f:
+  f.write("Name, Date, URL")
+  i = 0
+  for name in names:
+    f.write("\n" +  name + ", " + dates[i] + ", " + urls[i])
+    i += 1
