@@ -79,14 +79,14 @@ def scrapeIndUrl(url, name, date):
 	
 	
 	# Export data into a .txt file
-	with open('data' + date + '.txt', 'a+') as f:
+	with open('data/data' + date + '.txt', 'a+') as f:
 	  f.write(name + ", " + date + ", " + url + ", " + startTime + ", " + endTime + ", " + location + ", " + description + "\n")
 
 
-if __name__ == "__main__":
+def main(sysargv1):
 	# Reads in html
-	date = sys.argv[1]
-	calURL = "https://apps.carleton.edu/calendar/?start_date=" + date + "&view=daily&no_search=1"
+	dateArg = sysargv1
+	calURL = "https://apps.carleton.edu/calendar/?start_date=" + dateArg + "&view=daily&no_search=1"
 	fp = urllib.request.urlopen(calURL)
 	byteStr = fp.read()
 
@@ -126,11 +126,15 @@ if __name__ == "__main__":
 	  names.append(name)
 
 	# Writes data we have at this point to file
+	if(len(dates) == 0):
+	  dates.append(dateArg)
 	i = 0
-	open('data' + dates[0] + '.txt', 'w').close()
+	open('data/data' + dates[0] + '.txt', 'w').close()
 	for name in names:
 	  print(urls[i] + " " + name + " " + dates[i])
 	  scrapeIndUrl(urls[i], name, dates[i])
 	  i += 1
 
+if __name__ == "__main__":
+	main(sys.argv[1])
 
