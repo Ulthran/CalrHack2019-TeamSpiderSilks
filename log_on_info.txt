@@ -1,0 +1,6 @@
+#steps to log onto plotly to access graph of events per day
+
+#go to https://plot.ly/feed/#/
+
+#Username: colejump
+#Password: Schiller123
