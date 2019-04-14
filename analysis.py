@@ -22,7 +22,7 @@ for i in range(count):
 		numberPerDay[(df.iloc[i][1])] = numberPerDay[(df.iloc[i][1])] + 1
 	else: 
 		numberPerDay[(df.iloc[i][1])] = 1
-	categoryList = df.iloc[i][9].split(",")
+	categoryList = df.iloc[i][9].split("; ")
 	for x in categoryList:
 		if (x) in numberCategoryPerDay:
 			if (df.iloc[i][1]) in numberCategoryPerDay[x]:
