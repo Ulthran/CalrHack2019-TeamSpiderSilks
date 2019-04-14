@@ -83,19 +83,18 @@ def scrapeIndUrl(url, name, date):
 	# and the following line is:
 	# </div><div class="export">
 	
-	
-	
+
+
 	# Export data into a .txt file
-	name = re.escape(name)
-	date = re.escape(date)
-	url = re.escape(url)
-	startTime = re.escape(startTime)
-	endTime = re.escape(endTime)
-	location = re.escape(location)
-	description = re.escape(description)
+	name = name.replace(",", ";")
+	date = date.replace(",", ";")
+	url = url.replace(",", ";")
+	startTime = startTime.replace(",", ";")
+	endTime = endTime.replace(",", ";")
+	location = location.replace(",", ";")
+	description = description.replace(",", ";")
 	with open('data/data' + date + '.txt', 'a+') as f:
 	  f.write(name + ", " + date + ", " + url + ", " + startTime + ", " + endTime + ", " + location + ", " + description + "\n")
-
 
 def main(sysargv1):
 	# Reads in html
