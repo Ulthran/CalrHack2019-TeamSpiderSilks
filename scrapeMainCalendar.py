@@ -86,6 +86,13 @@ def scrapeIndUrl(url, name, date):
 	
 	
 	# Export data into a .txt file
+	name = re.escape(name)
+	date = re.escape(date)
+	url = re.escape(url)
+	startTime = re.escape(startTime)
+	endTime = re.escape(endTime)
+	location = re.escape(location)
+	description = re.escape(description)
 	with open('data/data' + date + '.txt', 'a+') as f:
 	  f.write(name + ", " + date + ", " + url + ", " + startTime + ", " + endTime + ", " + location + ", " + description + "\n")
 
