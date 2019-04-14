@@ -38,8 +38,13 @@ def scrapeIndUrl(url, name, date):
 	else:
 	  startTime = re.sub("<span class=\"time\">", "", searches[0])
 	  startTime = re.sub("</span> <span class=\"divider\">/</span>", "", startTime)
+	  startTime = re.sub(" <span class=\"location\">.*</span>", "", startTime)
 	  endTime = re.sub(".+ &#8211; ", "", startTime)
 	  startTime = re.sub(" &#8211; .*", "", startTime)
+	  if "am" in endTime:
+	    startTime = startTime + " am"
+	  else:
+	    startTime = startTime + " pm"
 	  
 	  # Implement this please
 	  #print (int(startTime[0:1])+12)
@@ -99,13 +104,14 @@ def main(sysargv1):
 	# and finishes with:
 	# </a>
 
-	searches = re.findall("<li class=\"event hasTime\"><a href=\"\?view=daily&amp;start_date=2019-04-13&amp;.+</a>", htmlStr)
+	searches = re.findall("<li class=\"event hasTime\"><a href=\"\?view=daily&amp;start_date=" + re.escape(dateArg) + "&amp;.+</a>", htmlStr)
 	urls = []
 	eventIDs = []
 	dates = []
 	names = []
 	for search in searches:
-	  newSearch = re.sub("<li class=\"event hasTime\"><a href=\"\?view=daily&amp;start_date=2019-04-13&amp;", "", search)
+	  print(search)
+	  newSearch = re.sub("<li class=\"event hasTime\"><a href=\"\?view=daily&amp;start_date=" + re.escape(dateArg) + "&amp;", "", search)
 	  newSearch = re.sub("</a>", "", newSearch)
 	  # URL can be composed from event_id and date
 	  eventID = re.findall("event_id=.+&amp;", newSearch)

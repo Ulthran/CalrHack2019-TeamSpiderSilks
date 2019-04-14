@@ -3,9 +3,7 @@
 # Team SpiderSilks
 # Author: Charlie Bushman
 #
-# Takes in three hyphen separated numbers (year-month-day) and creates a date
-# of the form yyyy-mm-dd
-# Stores date in date.txt
+# Runs scrapeMain on range of dates given here
 
 import sys
 import datetime
@@ -18,6 +16,5 @@ for i in range(1, 30):
   rawDate = year + "-" + month + "-" + str(i)
   date = datetime.datetime.strptime(rawDate, '%Y-%m-%d')
   
-  print(date)
-  scrapeMainCalendar.main(str(date))
+  scrapeMainCalendar.main(str(date)[0:10])
 
