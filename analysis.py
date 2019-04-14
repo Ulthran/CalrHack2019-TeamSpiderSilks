@@ -5,7 +5,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 plotly.tools.set_credentials_file(username='colejump', api_key='Mh3sATfsUKQtelXlZTNP')
 
-df = pd.read_excel("yearData.xls")
+df = pd.read_excel("Book.xlsx")
 
 #counts the number of events for each day
 numberCategoryPerDay = {}
@@ -19,18 +19,18 @@ for index, row in df.iterrows():
 	count = count + 1
 for i in range(count):
 	if (df.iloc[i][1]) in numberPerDay:
-		numberPerDay[(df.iloc[i][2])] = numberPerDay[(df.iloc[i][2])] + 1
+		numberPerDay[(df.iloc[i][1])] = numberPerDay[(df.iloc[i][1])] + 1
 	else: 
-		numberPerDay[(df.iloc[i][2])] = 1
-	categoryList = df.iloc[i][9].split("; ")
+		numberPerDay[(df.iloc[i][1])] = 1
+	categoryList = df.iloc[i][9].split(",")
 	for x in categoryList:
 		if (x) in numberCategoryPerDay:
 			if (df.iloc[i][1]) in numberCategoryPerDay[x]:
-				numberCategoryPerDay[x][(df.iloc[i][2])] = numberCategoryPerDay[x][(df.iloc[i][2])] + 1
+				numberCategoryPerDay[x][(df.iloc[i][1])] = numberCategoryPerDay[x][(df.iloc[i][1])] + 1
 			else: 
-				numberCategoryPerDay[x][(df.iloc[i][2])] = 1	
+				numberCategoryPerDay[x][(df.iloc[i][1])] = 1	
 			continue
-		numberCategoryPerDay[x] = {df.iloc[i][2] : 1}
+		numberCategoryPerDay[x] = {df.iloc[i][1] : 1}
 					
 for x, y in numberPerDay.items():
 	xValues.append(x)

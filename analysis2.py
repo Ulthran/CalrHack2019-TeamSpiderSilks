@@ -5,7 +5,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 plotly.tools.set_credentials_file(username='colejump', api_key='Mh3sATfsUKQtelXlZTNP')
 
-df = pd.read_excel("yearData.xls")
+df = pd.read_excel("Book.xlsx")
 
 #counts the number of events for each day
 totalDayEvents = {}
@@ -18,12 +18,12 @@ count = 0
 for index, row in df.iterrows():
 	count = count + 1
 for i in range(count):
-	if (str(df.iloc[i][2])) in numberPerDay:
-		start = df.iloc[i][4]
+	if (str(df.iloc[i][1])) in numberPerDay:
+		start = df.iloc[i][2]
 		startList = str(start).split(":")
 		startHour = startList[0]
 		startHour = int(startHour)
-		end = df.iloc[i][5]
+		end = df.iloc[i][3]
 		endList = str(end).split(":")
 		endHour = endList[0]
 		endHour = int(endHour)
@@ -54,7 +54,7 @@ for i in range(count):
 			print(numberPerDay)
 			numberPerDay = {}
 	else: 
-		currentDayList = str(df.iloc[i][2]).split(" ")
+		currentDayList = str(df.iloc[i][1]).split(" ")
 		currentDay = currentDayList[0]
 		tmp = []
 		for j in numberPerDay:
@@ -63,7 +63,7 @@ for i in range(count):
 			if (k == tmp[0]):
 				numberPerDay.pop(str(k))
 				continue
-			if (k == str(df.iloc[i][2])):
+			if (k == str(df.iloc[i][1])):
 				numberPerDay[k] = numberPerDay.pop(str(k))
 				continue
 			if (len(str(k)) == 1):
@@ -76,27 +76,27 @@ for i in range(count):
 		numberPerDay = {}
 		numberPerDay[str(df.iloc[i][1])] = 0
 		numberPerDay.update(dayTemplate)
-		start = df.iloc[i][4]
+		start = df.iloc[i][2]
 		startList = str(start).split(":")
 		startHour = startList[0]
 		startHour = int(startHour)
-		end = df.iloc[i][5]
+		end = df.iloc[i][3]
 		endList = str(end).split(":")
 		endHour = endList[0]
 		endHour = int(endHour)
 		while (endHour != startHour and endHour >= 0):
 			numberPerDay[str(endHour)] = numberPerDay[str(endHour)] + 1
 			if (endHour == 0):
-				numberPerDay[str(df.iloc[i][2])] = numberPerDay[str(df.iloc[i][2])] + 1
+				numberPerDay[str(df.iloc[i][1])] = numberPerDay[str(df.iloc[i][1])] + 1
 			endHour = endHour - 1
 		if i == (count-1):
-			currentDayList = str(df.iloc[i][2]).split(" ")
+			currentDayList = str(df.iloc[i][1]).split(" ")
 			currentDay = currentDayList[0]
 			tmp = []
 			for j in numberPerDay:
 				tmp.append(j)
 			for k in tmp:
-				if (k == str(df.iloc[i][2])):
+				if (k == str(df.iloc[i][1])):
 					numberPerDay[k] = numberPerDay.pop(str(k))
 					continue
 				if (len(str(k)) == 1):
