@@ -5,6 +5,9 @@ calendarBuilder.py
 IMPORTANT: WILL CLEAR ALL EVENTS ON WHATEVER CALENDAR IT IS USED ON
 *******************************************************************
 
+
+Author: Silas Rhyneer
+
 Imports calendar data from an excel sheet and exports it to user's choice of
 google calendars. It wipes the calendar, and then uploads all of the excel sheet.
 """
@@ -64,7 +67,7 @@ def insertYearEvents(service, creds, name, location, description, date, startTim
 
 def main():
 
-    calendarEventsDF = pd.read_excel("yearData.xlsx", skiprows = 0)
+    calendarEventsDF = pd.read_excel("yearData.xls", skiprows = 0)
 
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
