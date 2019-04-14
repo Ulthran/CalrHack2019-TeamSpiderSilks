@@ -40,7 +40,7 @@ def categoryColor(category):
         colorId = 3
     return colorId
 
-def insertYearEvents(service, creds, name, location, description, date, startTime, endTime, category, keyWords, URL):
+def insertYearEvents(service, creds, name, location, description, date, startTime, endTime, category, link):
     event = {
       'summary': name,
       'location': location,
@@ -53,7 +53,7 @@ def insertYearEvents(service, creds, name, location, description, date, startTim
         'dateTime': date + 'T' + endTime + ":00",
         'timeZone': 'America/Chicago',
       },
-      'description': category + "\n" + description + "\n\n" + keyWords + "\n\n" + URL,
+      'description': str(category) + "\n" + str(description) + "\n\n" + str(link),
       'locked': True,
       'colorId': categoryColor(category),
       #'colorId': {
@@ -67,7 +67,7 @@ def insertYearEvents(service, creds, name, location, description, date, startTim
 
 def main():
 
-    calendarEventsDF = pd.read_excel("yearData.xls", skiprows = 0)
+    calendarEventsDF = pd.read_excel("dummyData.xls", skiprows = 0)
 
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -93,7 +93,7 @@ def main():
     service.calendars().clear(calendarId='primary').execute()
 
     for index, row in calendarEventsDF.iterrows():
-        insertYearEvents(service, creds, row['name'], row['location'], row['description'], row['date'], row['startTime'], row['endTime'], row['category'], row['keyWords'], row['URL'])
+        insertYearEvents(service, creds, row['name'], row['location'], row['description'], row['date'], row['startTime'], row['endTime'], row['category'], row['link'])
 
 
 
