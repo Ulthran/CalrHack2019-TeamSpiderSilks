@@ -34,16 +34,18 @@ def scrapeIndUrl(url, name, date):
 	if "8211" not in searches[0]:
 	  startTime = re.sub("<span class=\"time\">", "", searches[0])
 	  startTime = re.sub("</span> <span class=\"divider\">/</span>", "", startTime)
-	  endTime = ""
+	  endTime = startTime
 	else:
 	  startTime = re.sub("<span class=\"time\">", "", searches[0])
 	  startTime = re.sub("</span> <span class=\"divider\">/</span>", "", startTime)
 	  startTime = re.sub(" <span class=\"location\">.*</span>", "", startTime)
+	  startTime = re.sub(" <span class=\"location\">.*", "", startTime)
+	  startTime = re.sub("</span>", "", startTime)
 	  endTime = re.sub(".+ &#8211; ", "", startTime)
 	  startTime = re.sub(" &#8211; .*", "", startTime)
-	  if "am" in endTime:
+	  if "am" in endTime and "am" not in startTime:
 	    startTime = startTime + " am"
-	  else:
+	  elif "pm" not in startTime:
 	    startTime = startTime + " pm"
 	  
 	  # Implement this please
